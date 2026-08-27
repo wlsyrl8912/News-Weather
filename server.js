@@ -6,7 +6,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+app.use(express.static(__dirname));
 // 외부 환경변수 오류를 원천 차단하고 라이브러리 규격에 100% 맞는 VAPID 키 자동 생성
 const vapidKeys = webpush.generateVAPIDKeys();
 
