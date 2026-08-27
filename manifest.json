@@ -1,7 +1,7 @@
 {
   "name": "모닝 브리핑",
   "short_name": "모닝브리핑",
-  "description": "매일 아침 대구 날씨 및 4대 핵심 뉴스 브리핑",
+  "description": "매일 아침 날씨 및 4대 핵심 뉴스 브리핑",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0b0f19",
