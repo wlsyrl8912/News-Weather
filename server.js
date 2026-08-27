@@ -7,8 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
-const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
+// 공백, 따옴표, 줄바꿈, 끝자리 등호(=)를 자동으로 안전하게 정제
+const cleanKey = (key) => (key || '').replace(/["'\s]/g, '').replace(/=+$/, '');
+
+const VAPID_PUBLIC_KEY = cleanKey(process.env.VAPID_PUBLIC_KEY);
+const VAPID_PRIVATE_KEY = cleanKey(process.env.VAPID_PRIVATE_KEY);
 
 webpush.setVapidDetails(
   'mailto:admin@example.com',
