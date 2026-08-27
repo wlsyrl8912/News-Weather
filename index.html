@@ -161,7 +161,11 @@
           status.innerText = '❌ 알림 권한이 거부되었습니다.';
           return;
         }
-
+// 기존 구독 자동 해제 (충돌 방지)
+        const existingSub = await reg.pushManager.getSubscription();
+        if (existingSub) {
+          await existingSub.unsubscribe();
+        }
         const resKey = await fetch(`${SERVER_URL}/api/vapid-public-key`);
         const { publicKey } = await resKey.json();
 
