@@ -152,14 +152,25 @@
     </div>
   </div>
 
-  <script>
+ 
+<script>
     const SERVER_URL = 'https://news-weather-mmev.onrender.com';
 
-    // 현재 시간 표시
+    // 1. 이전에 설정한 시간과 지역 불러오기
+    const savedTime = localStorage.getItem('morning_briefing_time');
+    const savedLocation = localStorage.getItem('morning_briefing_location');
+    if (savedTime) {
+      document.getElementById('notifyTime').value = savedTime;
+    }
+    if (savedLocation) {
+      document.getElementById('location').value = savedLocation;
+    }
+
+    // 2. 현재 시간 표시
     const now = new Date();
     document.getElementById('liveTime').innerText = `${now.getMonth()+1}월 ${now.getDate()}일 기준`;
 
-    // 날씨 데이터 비동기 로드 (Open-Meteo 무료 API: 대구 기준)
+    // 3. 날씨 로드
     async function loadWeather() {
       try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.8714&longitude=128.6014&current=temperature_2m,relative_humidity_2m,weather_code&timezone=Asia%2FSeoul');
@@ -174,7 +185,7 @@
     }
     loadWeather();
 
-    // 뉴스 카테고리 필터링 탭 함수
+    // 4. 뉴스 필터
     function filterNews(category, btn) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -189,7 +200,6 @@
       });
     }
 
-    // Base64 VAPID 키 변환 도우미
     function urlBase64ToUint8Array(base64String) {
       const padding = '='.repeat((4 - base64String.length % 4) % 4);
       const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -201,7 +211,7 @@
       return outputArray;
     }
 
-    // 알림 구독 및 재설정 로직 (기존 키 충돌 방지 Unsubscribe 자동 처리)
+    // 5. 알림 구독 및 기기 저장
     document.getElementById('btnSubscribe').addEventListener('click', async () => {
       const status = document.getElementById('statusText');
       status.innerText = '알림 설정을 갱신하는 중...';
@@ -219,17 +229,14 @@
           return;
         }
 
-        // 이전 구독 캐시 자동 해제
         const existingSub = await reg.pushManager.getSubscription();
         if (existingSub) {
           await existingSub.unsubscribe();
         }
 
-        // 새 VAPID 퍼블릭 키 로드
         const resKey = await fetch(`${SERVER_URL}/api/vapid-public-key`);
         const { publicKey } = await resKey.json();
 
-        // 새 푸시 구독 발급
         const subscription = await reg.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(publicKey)
@@ -238,12 +245,15 @@
         const notifyTime = document.getElementById('notifyTime').value;
         const location = document.getElementById('location').value;
 
-        // 서버 전송 및 스케줄 등록
         await fetch(`${SERVER_URL}/api/subscribe`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ subscription, time: notifyTime, location })
         });
+
+        // 폰에 영구 저장
+        localStorage.setItem('morning_briefing_time', notifyTime);
+        localStorage.setItem('morning_briefing_location', location);
 
         status.innerText = `✅ [${location}] 매일 ${notifyTime} 알림 등록 완료!`;
       } catch (err) {
@@ -251,5 +261,6 @@
       }
     });
   </script>
+
 </body>
 </html>
