@@ -6,9 +6,11 @@
   <title>모닝 브리핑 | 날씨 & 뉴스</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
+      --bg: #0b0f19;
+      --card-bg: #161f30;
+      --card-border: #23334d;
       --accent: #38bdf8;
+      --accent-hover: #0284c7;
       --text: #f8fafc;
       --text-muted: #94a3b8;
     }
@@ -18,53 +20,62 @@
 
     /* Header */
     header { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; }
-    header h1 { font-size: 1.4rem; color: var(--accent); }
+    header h1 { font-size: 1.45rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
     .badge-live { background: rgba(56, 189, 248, 0.15); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; border: 1px solid var(--accent); }
 
     /* Cards */
-    .card { background-color: var(--card-bg); border-radius: 16px; padding: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); border: 1px solid #334155; }
-    .card-title { font-size: 1rem; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .card { background-color: var(--card-bg); border-radius: 18px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid var(--card-border); }
+    .card-title { font-size: 1rem; font-weight: bold; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
 
     /* Weather */
     .weather-info { display: flex; justify-content: space-between; align-items: center; }
-    .temp-main { font-size: 2.2rem; font-weight: 800; color: #fff; }
-    .weather-detail { font-size: 0.85rem; color: var(--text-muted); text-align: right; line-height: 1.4; }
+    .temp-main { font-size: 2.5rem; font-weight: 800; color: #fff; }
+    .weather-detail { font-size: 0.85rem; color: var(--text-muted); text-align: right; line-height: 1.5; }
 
-    /* News Items */
+    /* News Category Tabs */
+    .tabs { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+    .tab-btn { background: #0f172a; color: var(--text-muted); border: 1px solid var(--card-border); padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+    .tab-btn.active { background: var(--accent); color: #0f172a; border-color: var(--accent); }
+
+    /* News Cards */
     .news-list { display: flex; flex-direction: column; gap: 12px; }
-    .news-item { padding-bottom: 12px; border-bottom: 1px solid #334155; text-decoration: none; display: block; }
-    .news-item:last-child { border-bottom: none; padding-bottom: 0; }
-    .news-tag { display: inline-block; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px; }
+    .news-card { background: #0f172a; border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; text-decoration: none; color: inherit; display: block; transition: 0.2s; }
+    .news-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .news-tag { display: inline-block; font-size: 0.7rem; font-weight: bold; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
     .tag-politics { background: #ef4444; color: #fff; }
     .tag-economy { background: #10b981; color: #fff; }
     .tag-society { background: #f59e0b; color: #fff; }
-    .tag-it { background: #6366f1; color: #fff; }
-    .news-headline { font-size: 0.9rem; color: var(--text); line-height: 1.4; font-weight: 500; }
-    .news-item:hover .news-headline { color: var(--accent); }
+    .tag-it { background: #8b5cf6; color: #fff; }
+    .news-headline { font-size: 0.95rem; font-weight: 700; color: #fff; line-height: 1.4; margin-bottom: 6px; }
+    .news-summary { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 8px; }
+    .news-link-hint { font-size: 0.75rem; color: var(--accent); text-align: right; }
 
     /* Push Settings */
-    .setting-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-    label { font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
-    input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 0.95rem; }
-    button { width: 100%; padding: 12px; background: #0284c7; color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .setting-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    label { font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 6px; }
+    input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--card-border); background: #0f172a; color: #fff; font-size: 0.95rem; }
+    button { width: 100%; padding: 14px; background: var(--accent-hover); color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
     button:hover { background: #0369a1; }
-    .status { margin-top: 10px; font-size: 0.8rem; text-align: center; color: var(--accent); }
+    .status { margin-top: 12px; font-size: 0.85rem; text-align: center; color: var(--accent); font-weight: 500; word-break: break-all; }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <h1>🌅 모닝 브리핑</h1>
-      <span class="badge-live">LIVE</span>
+      <span class="badge-live">LIVE FEED</span>
     </header>
 
     <!-- 날씨 브리핑 카드 -->
     <div class="card">
-      <div class="card-title">🌤️ 오늘 대구 날씨</div>
+      <div class="card-title">
+        <span>🌤️ 대구 실시간 날씨</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);" id="liveTime"></span>
+      </div>
       <div class="weather-info">
         <div class="temp-main" id="tempDisplay">--°C</div>
         <div class="weather-detail" id="weatherDesc">
-          날씨 정보를 불러오는 중...
+          기상 정보를 동기화하는 중...
         </div>
       </div>
     </div>
@@ -72,23 +83,48 @@
     <!-- 4대 핵심 뉴스 카드 -->
     <div class="card">
       <div class="card-title">📌 오늘의 4대 핵심 뉴스</div>
+      
+      <!-- 카테고리 필터 탭 -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="filterNews('all', this)">전체보기</button>
+        <button class="tab-btn" onclick="filterNews('politics', this)">정치</button>
+        <button class="tab-btn" onclick="filterNews('economy', this)">경제</button>
+        <button class="tab-btn" onclick="filterNews('society', this)">사회</button>
+        <button class="tab-btn" onclick="filterNews('it', this)">IT·과학</button>
+      </div>
+
       <div class="news-list" id="newsContainer">
-        <div class="news-item">
+        <!-- 정치 -->
+        <a href="https://news.naver.com" target="_blank" class="news-card" data-category="politics">
           <span class="news-tag tag-politics">정치</span>
-          <div class="news-headline">주요 정책 현안 및 국회 의사일정 동향 점검</div>
-        </div>
-        <div class="news-item">
+          <div class="news-headline">주요 정책 법안 처리 및 여야 국회 의사일정 동향</div>
+          <div class="news-summary">정기 국회 상임위 핵심 쟁점 법안 심사와 주요 정당별 현안 대책 회의가 본격화됩니다.</div>
+          <div class="news-link-hint">원문 기사 읽기 →</div>
+        </a>
+
+        <!-- 경제 -->
+        <a href="https://news.naver.com" target="_blank" class="news-card" data-category="economy">
           <span class="news-tag tag-economy">경제</span>
-          <div class="news-headline">글로벌 금융 시장 환율 변동 및 증시 주요 지표 분석</div>
-        </div>
-        <div class="news-item">
+          <div class="news-headline">글로벌 금융 시장 환율 변동 및 국내 증시 수급 분석</div>
+          <div class="news-summary">미국 금리 전망 및 반도체·수출주 중심의 외국인 수급 변동성을 집중 점검합니다.</div>
+          <div class="news-link-hint">원문 기사 읽기 →</div>
+        </a>
+
+        <!-- 사회 -->
+        <a href="https://news.naver.com" target="_blank" class="news-card" data-category="society">
           <span class="news-tag tag-society">사회</span>
-          <div class="news-headline">전국 주요 교통 상황 및 계절성 생활 안전 점검</div>
-        </div>
-        <div class="news-item">
+          <div class="news-headline">출근길 주요 간선도로 교통 상황 및 계절성 생활 안전 점검</div>
+          <div class="news-summary">전국 주요 고속도로 소통 현황과 환절기 기온 변화에 따른 대중교통 이용 유의 사항입니다.</div>
+          <div class="news-link-hint">원문 기사 읽기 →</div>
+        </a>
+
+        <!-- IT·과학 -->
+        <a href="https://news.naver.com" target="_blank" class="news-card" data-category="it">
           <span class="news-tag tag-it">IT·과학</span>
-          <div class="news-headline">차세대 인공지능 기술 동향 및 디지털 플랫폼 혁신 발표</div>
-        </div>
+          <div class="news-headline">차세대 온디바이스 인공지능 기술 표준 및 신제품 로드맵</div>
+          <div class="news-summary">글로벌 빅테크 기업들의 생성형 AI 모바일 탑재 전략과 차세대 반도체 경쟁이 가속화됩니다.</div>
+          <div class="news-link-hint">원문 기사 읽기 →</div>
+        </a>
       </div>
     </div>
 
@@ -97,11 +133,11 @@
       <div class="card-title">🔔 푸시 알림 설정</div>
       <div class="setting-row">
         <div>
-          <label>알림 시간</label>
+          <label>알림 받을 시간</label>
           <input type="time" id="notifyTime" value="06:00" />
         </div>
         <div>
-          <label>지역</label>
+          <label>지역 선택</label>
           <select id="location">
             <option value="대구" selected>대구</option>
             <option value="서울">서울</option>
@@ -109,7 +145,7 @@
           </select>
         </div>
       </div>
-      <button id="btnSubscribe">모닝 알림 받기 / 재설정</button>
+      <button id="btnSubscribe">🔔 모닝 알림 받기 / 재설정</button>
       <div class="status" id="statusText"></div>
     </div>
   </div>
@@ -117,14 +153,18 @@
   <script>
     const SERVER_URL = 'https://news-weather-mmev.onrender.com';
 
-    // 실시간 날씨 데이터 로드 (Open-Meteo 무료 API: 대구 기준)
+    // 현재 시간 표시
+    const now = new Date();
+    document.getElementById('liveTime').innerText = `${now.getMonth()+1}월 ${now.getDate()}일 기준`;
+
+    // 날씨 데이터 비동기 로드 (Open-Meteo 무료 API: 대구 기준)
     async function loadWeather() {
       try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.8714&longitude=128.6014&current=temperature_2m,relative_humidity_2m,weather_code&timezone=Asia%2FSeoul');
         const data = await res.json();
         const cur = data.current;
         document.getElementById('tempDisplay').innerText = `${Math.round(cur.temperature_2m)}°C`;
-        document.getElementById('weatherDesc').innerHTML = `습도: ${cur.relative_humidity_2m}%<br/>대구광역시 기준`;
+        document.getElementById('weatherDesc').innerHTML = `습도 ${cur.relative_humidity_2m}%<br/>대구광역시 중구 기준`;
       } catch (e) {
         document.getElementById('tempDisplay').innerText = '24°C';
         document.getElementById('weatherDesc').innerText = '맑음 (대구)';
@@ -132,7 +172,22 @@
     }
     loadWeather();
 
-    // VAPID 키 변환 도우미
+    // 뉴스 카테고리 필터링 탭 함수
+    function filterNews(category, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.news-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Base64 VAPID 키 변환 도우미
     function urlBase64ToUint8Array(base64String) {
       const padding = '='.repeat((4 - base64String.length % 4) % 4);
       const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -144,10 +199,10 @@
       return outputArray;
     }
 
-    // 알림 등록 로직
+    // 알림 구독 및 재설정 로직 (기존 키 충돌 방지 Unsubscribe 자동 처리)
     document.getElementById('btnSubscribe').addEventListener('click', async () => {
       const status = document.getElementById('statusText');
-      status.innerText = '알림 권한을 확인하는 중...';
+      status.innerText = '알림 설정을 갱신하는 중...';
 
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         status.innerText = '❌ 웹 푸시를 지원하지 않는 브라우저입니다.';
@@ -161,14 +216,18 @@
           status.innerText = '❌ 알림 권한이 거부되었습니다.';
           return;
         }
-// 기존 구독 자동 해제 (충돌 방지)
+
+        // 이전 구독 캐시 자동 해제
         const existingSub = await reg.pushManager.getSubscription();
         if (existingSub) {
           await existingSub.unsubscribe();
         }
+
+        // 새 VAPID 퍼블릭 키 로드
         const resKey = await fetch(`${SERVER_URL}/api/vapid-public-key`);
         const { publicKey } = await resKey.json();
 
+        // 새 푸시 구독 발급
         const subscription = await reg.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(publicKey)
@@ -177,6 +236,7 @@
         const notifyTime = document.getElementById('notifyTime').value;
         const location = document.getElementById('location').value;
 
+        // 서버 전송 및 스케줄 등록
         await fetch(`${SERVER_URL}/api/subscribe`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
