@@ -7,31 +7,34 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 공백, 따옴표, 줄바꿈, 끝자리 등호(=)를 자동으로 안전하게 정제
-const cleanKey = (key) => (key || '').replace(/["'\s]/g, '').replace(/=+$/, '');
-
-const VAPID_PUBLIC_KEY = cleanKey(process.env.VAPID_PUBLIC_KEY);
-const VAPID_PRIVATE_KEY = cleanKey(process.env.VAPID_PRIVATE_KEY);
+// 외부 환경변수 오류를 원천 차단하고 라이브러리 규격에 100% 맞는 VAPID 키 자동 생성
+const vapidKeys = webpush.generateVAPIDKeys();
 
 webpush.setVapidDetails(
   'mailto:admin@example.com',
-  VAPID_PUBLIC_KEY,
-  VAPID_PRIVATE_KEY
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
 );
 
 let subscriptions = [];
 
+// 프론트엔드가 사용할 공개키 반환
 app.get('/api/vapid-public-key', (req, res) => {
-  res.json({ publicKey: VAPID_PUBLIC_KEY });
+  res.json({ publicKey: vapidKeys.publicKey });
 });
 
+// 알림 구독 등록
 app.post('/api/subscribe', (req, res) => {
   const { subscription, time, location } = req.body;
+  if (!subscription || !subscription.endpoint) {
+    return res.status(400).json({ error: '유효하지 않은 구독 정보입니다.' });
+  }
   subscriptions = subscriptions.filter(s => s.subscription.endpoint !== subscription.endpoint);
   subscriptions.push({ subscription, time: time || '06:00', location: location || '대구' });
   res.json({ success: true, totalDevices: subscriptions.length });
 });
 
+// 수동 테스트 푸시 발송
 app.post('/api/send-test-push', async (req, res) => {
   const payload = JSON.stringify({
     title: req.body.title || '🌅 [테스트] 모닝 브리핑',
@@ -54,6 +57,7 @@ app.post('/api/send-test-push', async (req, res) => {
   res.json({ success: true, sentCount: subscriptions.length });
 });
 
+// 매분 정각 시간 체크 후 자동 푸시 발송 (KST 기준)
 cron.schedule('* * * * *', async () => {
   const now = new Date();
   const kstTime = now.toLocaleTimeString('ko-KR', {
@@ -75,4 +79,6 @@ cron.schedule('* * * * *', async () => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Push Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Push Server running on port ${PORT}`);
+});
